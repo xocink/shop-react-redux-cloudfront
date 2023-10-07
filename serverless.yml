@@ -1,4 +1,4 @@
-service: my-store-app
+service: my-app-for-aws
 
 frameworkVersion: "3"
 
@@ -6,24 +6,19 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: eu-west-1
-  # setup profile for AWS CLI.
-  # profile: node-aws
+  profile: default
 
 plugins:
   - serverless-finch
-  # 'serverless-single-page-app-plugin' is a custom plugin that located .serverless_plugins folder.
-  # Existing plugin (https://www.npmjs.com/package/serverless-single-page-app-plugin) doesn't have invalidate cache feature that often used during CI/CD events.
-  # How to build your own plugins: https://www.serverless.com/framework/docs/providers/aws/guide/plugins#service-local-plugin
   - serverless-single-page-app-plugin
   - serverless-s3-cleaner
 
 custom:
   client:
-    bucketName: my-store-app
+    bucketName: my-new-bucket-aws-courses
     distributionFolder: dist
-  s3BucketName: ${self:custom.client.bucketName}
 
-  ## Serverless-single-page-app-plugin configuration:
+  s3BucketName: ${self:custom.client.bucketName}
   s3LocalPath: ${self:custom.client.distributionFolder}/
   serverless-s3-cleaner:
     buckets:
@@ -36,10 +31,14 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
         # VersioningConfiguration:
         #   Status: Enabled
 
@@ -87,9 +86,6 @@ resources:
           Enabled: true
           IPV6Enabled: true
           HttpVersion: http2
-          ## Uncomment the following section in case you are using a custom domain
-          # Aliases:
-          # - mysite.example.com
           DefaultRootObject: index.html
           ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
           ## The only exception are files that actually exist e.h. app.js, reset.css
