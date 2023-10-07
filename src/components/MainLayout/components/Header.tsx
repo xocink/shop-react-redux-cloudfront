@@ -33,7 +33,7 @@ export default function Header() {
             underline="none"
             to="/"
           >
-            My Store Auto deployed and Invalidated!
+            My Store Task3
           </Link>
         </Typography>
 
