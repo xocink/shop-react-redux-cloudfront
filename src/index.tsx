@@ -20,6 +20,7 @@ if (import.meta.env.DEV) {
 }
 
 const container = document.getElementById("app");
+localStorage.setItem("authorization_token", "eG9jaW5rOlRFU1RfUEFTU1dPUkQ=");
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!);
 root.render(
