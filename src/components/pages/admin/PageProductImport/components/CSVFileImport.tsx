@@ -36,6 +36,9 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         name: encodeURIComponent(name!),
       },
+      headers: {
+        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+      },
     });
     // @ts-ignore
     console.log("File to upload: ", file.name);
